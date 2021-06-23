@@ -12,6 +12,6 @@ public class Configs {
     public static final String CONTEXT = "android.content.Context";
     public static final String PROXY_CLASS_PREFIX = "ApplicationLife$$";
     public static final String PROXY_CLASS_SUFFIX = "$$Proxy";
-    public static final String APPLICATION_LIFE_CYCLE_CANONICAL_NAME = "me.bytebeats.applifecycle.api.ApplicationLifecycleCallback";
-    public static final String APPLICATION_LIFE_CYCLE_SIMPLE_NAME = "ApplicationLifecycleCallback";
+    public static final String APPLICATION_LIFE_CYCLE_CALLBACK_CANONICAL_NAME = "me.bytebeats.applifecycle.api.ApplicationLifecycleCallback";
+    public static final String APPLICATION_LIFE_CYCLE_CALLBACK_SIMPLE_NAME = "ApplicationLifecycleCallback";
 }
