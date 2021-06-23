@@ -1,5 +1,7 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
         google()
         mavenCentral()
@@ -12,5 +14,5 @@ include ':annotation'
 include ':api'
 include ':apt'
 include ':base'
-include ':base'
 include ':business-module'
+include ':agp'
