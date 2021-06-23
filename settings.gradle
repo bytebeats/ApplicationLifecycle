@@ -10,3 +10,4 @@ rootProject.name = "ApplicationLifecycle"
 include ':app'
 include ':annotation'
 include ':api'
+include ':apt'
