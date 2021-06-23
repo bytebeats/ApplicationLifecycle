@@ -76,7 +76,7 @@ public class ApplicationLifecycleProxyGenerator {
     }
 
     private String generateProxyClassName(TypeElement typeElement) {
-        return String.format("%1s%2s$3s", Configs.PROXY_CLASS_PREFIX, typeElement.getSimpleName().toString(), Configs.PROXY_CLASS_SUFFIX);
+        return String.format("%1s%2s%3s", Configs.PROXY_CLASS_PREFIX, typeElement.getSimpleName().toString(), Configs.PROXY_CLASS_SUFFIX);
     }
 
     private FieldSpec generateCallbackField(TypeMirror callback) {
@@ -123,6 +123,7 @@ public class ApplicationLifecycleProxyGenerator {
 
     private MethodSpec generateOnTrimMemoryMethod() {
         return MethodSpec.methodBuilder(METHOD_ON_TRIM_MEMORY)
+                .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .returns(void.class)
                 .addParameter(int.class, "level")

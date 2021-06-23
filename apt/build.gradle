@@ -12,8 +12,15 @@ dependencies {
 
     implementation('com.squareup:javapoet:1.13.0')
 
-    implementation('com.google.auto.service:auto-service:1.0')
-    annotationProcessor('com.google.auto.service:auto-service:1.0')
+    // Generates the required META-INF descriptor to make the processor incremental.
+    def incap_version = '0.2'
+    compileOnly "net.ltgt.gradle.incap:incap:$incap_version"
+    annotationProcessor "net.ltgt.gradle.incap:incap-processor:$incap_version"
 
-//    implementation('com.github.bytebeats.ApplicationLifecycle:annotation:1.0.0')
+    /**
+     * auto to register Processor by annotated with AutoService(Processor.class).
+     * If not using this, create resources/META-INF/services/javax.annotation.processing.Processor${packagename}.ApplicationLifecycleProcessor
+     */
+//    implementation('com.google.auto.service:auto-service:1.0')
+//    annotationProcessor('com.google.auto.service:auto-service:1.0')
 }
