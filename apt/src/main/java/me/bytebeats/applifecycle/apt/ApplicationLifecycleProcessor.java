@@ -1,13 +1,14 @@
 package me.bytebeats.applifecycle.apt;
 
-import com.google.auto.service.AutoService;
+
+import net.ltgt.gradle.incap.IncrementalAnnotationProcessor;
+import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType;
 
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -17,9 +18,9 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
-@AutoService(Processor.class)
 @SupportedAnnotationTypes(Configs.OPTION_ANNOTATION)
-@SupportedOptions(value = {Configs.OPTION_PACKAGE, Configs.OPTION_VERBOSE})
+@SupportedOptions(value = {Configs.OPTION_PATH, Configs.OPTION_VERBOSE})
+@IncrementalAnnotationProcessor(IncrementalAnnotationProcessorType.AGGREGATING)
 public class ApplicationLifecycleProcessor extends AbstractProcessor {
     private static final String TAG = ApplicationLifecycleProcessor.class.getSimpleName();
 
@@ -28,6 +29,8 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
+        verbose = Boolean.parseBoolean(processingEnv.getOptions().get(Configs.OPTION_VERBOSE));
+        printMessage(Diagnostic.Kind.NOTE, "ApplicationLifecycleProcessor has been initialized");
         ApplicationLifecycleProxyGenerator.init(processingEnv.getFiler());
     }
 
@@ -39,9 +42,9 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         try {
-            String pkg = processingEnv.getOptions().get(Configs.OPTION_PACKAGE);
+            String pkg = processingEnv.getOptions().get(Configs.OPTION_PATH);
             if (pkg == null || pkg.isEmpty()) {
-                printMessage(Diagnostic.Kind.ERROR, "No option " + Configs.OPTION_PACKAGE +
+                printMessage(Diagnostic.Kind.ERROR, "No option " + Configs.OPTION_PATH +
                         " passed to annotation processor");
                 return false;
             }
@@ -55,7 +58,6 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
             if (set.isEmpty()) {
                 return false;
             }
-            verbose = Boolean.parseBoolean(processingEnv.getOptions().get(Configs.OPTION_VERBOSE));
 
             for (TypeElement annotation : set) {
                 Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(annotation);
@@ -64,7 +66,7 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
                     if (element.getKind().isClass()) {
                         TypeElement typeElement = (TypeElement) element;
                         String qualifiedName = typeElement.getQualifiedName().toString();
-                        printMessage(Diagnostic.Kind.NOTE, "Checking class: " + qualifiedName);
+                        printMessage(Diagnostic.Kind.NOTE, "verifying class: " + qualifiedName);
                         //A Class who want to follow ApplicationLifecycle has to be annotated ApplicationLifecycle and implement ApplicationLifecycleCallback
                         List<? extends TypeMirror> mirrors = typeElement.getInterfaces();
                         TypeMirror callbackTypeMirror = null;
@@ -87,6 +89,7 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
                         }
                         printMessage(Diagnostic.Kind.NOTE, "start generating proxy class for " + qualifiedName);
                         ApplicationLifecycleProxyGenerator.getInstance().generate(typeElement, pkg, context, callbackTypeMirror);
+                        printMessage(Diagnostic.Kind.NOTE, String.format("%1s%2s%3s has been generated", Configs.PROXY_CLASS_PREFIX, typeElement.getSimpleName(), Configs.PROXY_CLASS_SUFFIX));
                     } else {
                         printMessage(Diagnostic.Kind.ERROR, "@ApplicationLifecycle is only valid for Class", element);
                         return false;
