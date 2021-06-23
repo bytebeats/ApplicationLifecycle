@@ -1,6 +1,6 @@
 package me.bytebeats.applifecycle.api;
 
-import android.app.Application;
+import android.content.Context;
 
 /**
  * Created by bytebeats on 2021/6/1 : 15:53
@@ -8,11 +8,17 @@ import android.app.Application;
  * Quote: Peasant. Educated. Worker
  */
 public interface ApplicationLifecycleCallback {
-    public void onCreate(Application application);
+    void onCreate(Context context);
 
-    public void onTerminate();
+    void onTerminate();
 
-    public void onLowMemory();
+    void onLowMemory();
 
-    public void onTrimMemory(int level);
+    void onTrimMemory(int level);
+
+    int getPriority();
+
+    int MIN_PRIORITY = 1;
+    int MAX_PRIORITY = 10;
+    int DEFAULT_PRIORITY = 5;
 }

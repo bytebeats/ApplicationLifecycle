@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -23,6 +24,12 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
     private static final String TAG = ApplicationLifecycleProcessor.class.getSimpleName();
 
     private boolean verbose = false;
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        ApplicationLifecycleProxyGenerator.init(processingEnv.getFiler());
+    }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
@@ -60,26 +67,28 @@ public class ApplicationLifecycleProcessor extends AbstractProcessor {
                         printMessage(Diagnostic.Kind.NOTE, "Checking class: " + qualifiedName);
                         //A Class who want to follow ApplicationLifecycle has to be annotated ApplicationLifecycle and implement ApplicationLifecycleCallback
                         List<? extends TypeMirror> mirrors = typeElement.getInterfaces();
+                        TypeMirror callbackTypeMirror = null;
                         if (mirrors.isEmpty()) {
-                            printMessage(Diagnostic.Kind.ERROR, qualifiedName + " has to implement interface " + Configs.APPLICATION_LIFE_CYCLE_CANONICAL_NAME);
+                            printMessage(Diagnostic.Kind.ERROR, qualifiedName + " has to implement interface " + Configs.APPLICATION_LIFE_CYCLE_CALLBACK_CANONICAL_NAME);
                             return false;
                         } else {
-                            boolean hasInterface = false;
+                            boolean hasAppLifecycleCallbackInterface = false;
                             for (TypeMirror mirror : mirrors) {
-                                if (Configs.APPLICATION_LIFE_CYCLE_CANONICAL_NAME.equals(mirror.toString())) {
-                                    hasInterface = true;
+                                if (Configs.APPLICATION_LIFE_CYCLE_CALLBACK_CANONICAL_NAME.equals(mirror.toString())) {
+                                    callbackTypeMirror = mirror;
+                                    hasAppLifecycleCallbackInterface = true;
                                     break;
                                 }
                             }
-                            if (!hasInterface) {
-                                printMessage(Diagnostic.Kind.ERROR, qualifiedName + " has to implement interface " + Configs.APPLICATION_LIFE_CYCLE_CANONICAL_NAME);
+                            if (!hasAppLifecycleCallbackInterface) {
+                                printMessage(Diagnostic.Kind.ERROR, qualifiedName + " has to implement interface " + Configs.APPLICATION_LIFE_CYCLE_CALLBACK_CANONICAL_NAME);
                                 return false;
                             }
                         }
                         printMessage(Diagnostic.Kind.NOTE, "start generating proxy class for " + qualifiedName);
-
+                        ApplicationLifecycleProxyGenerator.getInstance().generate(typeElement, pkg, context, callbackTypeMirror);
                     } else {
-                        printMessage(Diagnostic.Kind.ERROR, "@ApplicationLifecycle is only valid for Classes", element);
+                        printMessage(Diagnostic.Kind.ERROR, "@ApplicationLifecycle is only valid for Class", element);
                         return false;
                     }
                 }
