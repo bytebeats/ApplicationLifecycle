@@ -18,7 +18,7 @@ import me.bytebeats.applifecycle.annotation.ApplicationLifecycle;
  */
 @ApplicationLifecycle
 public class AppLifecycleRequest implements ApplicationLifecycleCallback {
-    private static final String TAG = "BusinessAppLifecycle";
+    private static final String TAG = "AppLifecycleRequest";
 
     @Override
     public void onCreate(Context context) {

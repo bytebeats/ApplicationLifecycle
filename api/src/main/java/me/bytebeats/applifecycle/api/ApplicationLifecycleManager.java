@@ -1,6 +1,7 @@
 package me.bytebeats.applifecycle.api;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -17,15 +18,18 @@ public class ApplicationLifecycleManager {
         mCallbacks.add(callback);
     }
 
-    public static void removeApplicationLifecycleCallback(String callback) {
+    public static void addApplicationLifecycleCallback(String appLifecycleCallbackProxyClassName) {
+        if (TextUtils.isEmpty(appLifecycleCallbackProxyClassName)) {
+            return;
+        }
         try {
-            Object object = Class.forName(callback).getConstructor().newInstance();
+            Object object = Class.forName(appLifecycleCallbackProxyClassName).getConstructor().newInstance();
             if (object instanceof ApplicationLifecycleCallback) {
-                mCallbacks.remove(object);
+                addApplicationLifecycleCallback((ApplicationLifecycleCallback) object);
             }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
