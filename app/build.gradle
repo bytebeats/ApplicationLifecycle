@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'applifecycle-agp'
 }
 
 android {
@@ -16,7 +17,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [path: 'me.bytebeats.applifecycle', verbose: 'true']
+                arguments = [path: 'me.bytebeats.applifecycle.app', verbose: 'true']
             }
         }
 

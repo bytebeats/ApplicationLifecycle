@@ -15,7 +15,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [path: 'me.bytebeats.applifecycle', verbose: 'true']
+                arguments = [path: 'me.bytebeats.applifecycle.business', verbose: 'true']
             }
         }
 
