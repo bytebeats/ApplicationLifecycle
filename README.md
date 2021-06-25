@@ -22,7 +22,7 @@ Note: verifying class: me.bytebeats.business.BusinessAppLifecycleRequest
 Note: start generating proxy class for me.bytebeats.business.BusinessAppLifecycleRequest
 Note: AppLifecycle$$BusinessAppLifecycleRequest$$Proxy has been generated
 ```
-<br>this means apt has worked successfully.
+<br>this means AGP has worked successfully.
 
 ## How to use AGP locally?
 <br>In apt module,
