@@ -25,7 +25,7 @@ Note: AppLifecycle$$BusinessAppLifecycleRequest$$Proxy has been generated
 <br>this means apt has worked successfully.
 
 ## How to use AGP locally?
-<br>In apt module,
+<br>In agp module,
 * Finish `Plugin<Project>` and `Transform` and `agp_name.properties`, in my case, it's <br>`src/main/groovy/me/bytebeats/applifecycle/agp/ApplicationLifecyclePlugin`&`ApplicationLifecycleTransform` and <br>`src/main/resources/META-INF/services/applifecycle-agp.properties` where `implementation-class` is declared.
 * in `agp/build.gradle`, declared `maven-publish` plugin and `mavenLocal()` and `pluginPublication` like this:<br>
 ```
@@ -89,7 +89,7 @@ inject finished
 ASM finished
 <<<<<------AppLifecycleAgpTransform finished------>>>>>
 ```
-<br>this means apt has worked successfully.
+<br>this means agp has worked successfully.
 
 ## Stargazers over time
 
