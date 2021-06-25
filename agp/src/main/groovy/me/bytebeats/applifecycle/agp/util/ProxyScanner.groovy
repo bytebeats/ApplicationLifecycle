@@ -7,7 +7,7 @@ import java.util.jar.JarFile
  * E-mail: happychinapc@gmail.com
  * Quote: Peasant. Educated. Worker
  */
-class ClassScanner {
+class ProxyScanner {
     static final boolean isTargetProxyClass(File file) {
         return isTargetProxyClass(file.name)
     }
