@@ -13,7 +13,7 @@ import org.gradle.api.Project
  * Quote: Peasant. Educated. Worker
  */
 class ApplicationLifecycleTransform extends Transform {
-    private static final String TAG = "applifecycle-agp-transform"
+    private static final String TAG = "AppLifecycleAgpTransform"
     private Project project
 
     ApplicationLifecycleTransform(Project project) {
@@ -49,8 +49,11 @@ class ApplicationLifecycleTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation)
-        println("<<<<<------${TAG} transforming started------>>>>>")
+        println("<<<<<------${TAG} started------>>>>>")
 
+        /**
+         * What we want is like: me.bytebeats.applifecycle.business.AppLifecycle$$BusinessAppLifecycleRequest$$Proxy.class
+         */
         def appLifecycleProxyClasses = []
 
         println("Scanning inputs")
@@ -58,10 +61,16 @@ class ApplicationLifecycleTransform extends Transform {
 
             input.directoryInputs.each { directoryInput ->
                 if (directoryInput.file.isDirectory()) {
+                    println("target directory input: ${directoryInput.file.path}")
                     directoryInput.file.eachFileRecurse { file ->
                         if (ClassScanner.isTargetProxyClass(file)) {
-                            println("target directory input: ${file.path}")
-                            appLifecycleProxyClasses.add("${file.path}")
+                            println("target file input: ${directoryInput.file.relativePath(file)}")
+                            /**
+                             * path is like: /Users/tiger/Development/Workspace/AS/ApplicationLifecycle/app/build/intermediates/javac/debug/classes/me/bytebeats/applifecycle/app/AppLifecycle$$AppLifecycleRequest$$Proxy.class
+                             * we want its relative path, like: me/bytebeats/applifecycle/app/AppLifecycle$$AppLifecycleRequest$$Proxy.class
+                             * then, replace `/` with `.`
+                             */
+                            appLifecycleProxyClasses.add("${directoryInput.file.relativePath(file).replace('/', '.')}")
                         }
                     }
                 }
@@ -77,7 +86,7 @@ class ApplicationLifecycleTransform extends Transform {
                 def absolutePath = jarInput.file.absolutePath
                 def md5 = DigestUtils.md2Hex(absolutePath)
                 def dest = transformInvocation.outputProvider.getContentLocation(jarName + md5, jarInput.contentTypes, jarInput.scopes, Format.JAR)
-                if (absolutePath.endsWith(".jar")) {
+                if (absolutePath.endsWith(".jar")) {//Proxy classes from jars. jars are from app project's dependency project or aar or just jars.
                     def src = jarInput.file
                     if (ClassScanner.shouldProcessPreDexJar(absolutePath)) {
                         def proxyClassFiles = ClassScanner.scanProxyClassesFromJar(src, dest)
@@ -95,6 +104,6 @@ class ApplicationLifecycleTransform extends Transform {
         } else {
             ApplicationLifecycleCallbackInjector.getInstance().inject(appLifecycleProxyClasses)
         }
-        println("<<<<<------${TAG} transforming finished------>>>>>");
+        println("<<<<<------${TAG} finished------>>>>>");
     }
 }

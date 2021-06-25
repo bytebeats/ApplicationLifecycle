@@ -1,4 +1,4 @@
-package me.bytebeats.business_module;
+package me.bytebeats.business;
 
 import android.content.Context;
 import android.util.Log;

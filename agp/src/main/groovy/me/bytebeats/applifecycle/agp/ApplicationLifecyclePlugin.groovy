@@ -6,7 +6,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 class ApplicationLifecyclePlugin implements Plugin<Project> {
-    private static final String TAG = "applifecycle-agp"
+    private static final String TAG = "AppLifecycleAgp"
 
     @Override
     void apply(Project project) {
