@@ -3,7 +3,7 @@ package me.bytebeats.applifecycle.agp.asm
 import jdk.internal.org.objectweb.asm.ClassReader
 import jdk.internal.org.objectweb.asm.ClassVisitor
 import jdk.internal.org.objectweb.asm.ClassWriter
-import me.bytebeats.applifecycle.agp.util.ClassScanner
+import me.bytebeats.applifecycle.agp.util.ProxyScanner
 import me.bytebeats.applifecycle.agp.util.Configs
 import org.apache.commons.io.IOUtils
 
@@ -42,7 +42,7 @@ class ApplicationLifecycleCallbackInjector {
 
     void inject(List<String> proxyClassFiles) {
         println("ASM started")
-        File callbackManagerFile = ClassScanner.getAppLifecycleCallbackManagerFile()
+        File callbackManagerFile = ProxyScanner.getAppLifecycleCallbackManagerFile()
         //temp file for storing optimized application lifecycle callback manager file.
         File optJar = new File(callbackManagerFile.parent, "${callbackManagerFile.name}.opt")
         if (optJar.exists()) optJar.delete()

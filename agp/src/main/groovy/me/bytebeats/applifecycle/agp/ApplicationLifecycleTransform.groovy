@@ -3,7 +3,7 @@ package me.bytebeats.applifecycle.agp
 import com.android.build.api.transform.*
 import com.android.utils.FileUtils
 import me.bytebeats.applifecycle.agp.asm.ApplicationLifecycleCallbackInjector
-import me.bytebeats.applifecycle.agp.util.ClassScanner
+import me.bytebeats.applifecycle.agp.util.ProxyScanner
 import org.apache.commons.codec.digest.DigestUtils
 import org.gradle.api.Project
 
@@ -63,7 +63,7 @@ class ApplicationLifecycleTransform extends Transform {
                 if (directoryInput.file.isDirectory()) {
                     println("target directory input: ${directoryInput.file.path}")
                     directoryInput.file.eachFileRecurse { file ->
-                        if (ClassScanner.isTargetProxyClass(file)) {
+                        if (ProxyScanner.isTargetProxyClass(file)) {
                             println("target file input: ${directoryInput.file.relativePath(file)}")
                             /**
                              * path is like: /Users/tiger/Development/Workspace/AS/ApplicationLifecycle/app/build/intermediates/javac/debug/classes/me/bytebeats/applifecycle/app/AppLifecycle$$AppLifecycleRequest$$Proxy.class
@@ -88,8 +88,8 @@ class ApplicationLifecycleTransform extends Transform {
                 def dest = transformInvocation.outputProvider.getContentLocation(jarName + md5, jarInput.contentTypes, jarInput.scopes, Format.JAR)
                 if (absolutePath.endsWith(".jar")) {//Proxy classes from jars. jars are from app project's dependency project or aar or just jars.
                     def src = jarInput.file
-                    if (ClassScanner.shouldProcessPreDexJar(absolutePath)) {
-                        def proxyClassFiles = ClassScanner.scanProxyClassesFromJar(src, dest)
+                    if (ProxyScanner.shouldProcessPreDexJar(absolutePath)) {
+                        def proxyClassFiles = ProxyScanner.scanProxyClassesFromJar(src, dest)
                         if (proxyClassFiles != null && !proxyClassFiles.isEmpty()) {
                             appLifecycleProxyClasses.addAll(proxyClassFiles)
                         }
