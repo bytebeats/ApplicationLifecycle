@@ -5,23 +5,29 @@ Android 组件化开发时, 将 Application 的生命周期主动发送给监听
 
 # How to use APT&AGP locally?
 ## How to use APT locally?
-* Finish `AbstractProcessor` and manifest `resources`, in my case, it's `src/main/java/me/bytebeats/applifecycle/apt/ApplicationLifecycleProcessor` and `src/main/resources/META-INF/services/javax.annotation.processing.Processor` where is the `path` of AbstractProcessor
-* in `build.gradle`s of modules where you want to use this local `APT`, add `dependencies`: 
-  `implementation project(path: ':annotation')
-    implementation project(path: ':api')
-    annotationProcessor project(path: ':apt')`
-* then annotate you java file with `ApplicationLifecycle` which implements `ApplicationLifecycleCallback`
-* then run `./gradlew assemble` in `Terminal`, you'll see:
-`> Task :business-module:compileDebugJavaWithJavac
+<br>In apt module,
+* Finish `AbstractProcessor` and manifest `resources`, in my case, it's <br>`src/main/java/me/bytebeats/applifecycle/apt/ApplicationLifecycleProcessor` and <br>`src/main/resources/META-INF/services/javax.annotation.processing.Processor` where is the `path` of AbstractProcessor
+* in `build.gradle`s of modules where you want to use this local `APT`, add `dependencies`: <br>
+```
+  implementation project(path: ':annotation')
+  implementation project(path: ':api')
+  annotationProcessor project(path: ':apt')
+```
+* then annotate you java class with `ApplicationLifecycle` and implements `ApplicationLifecycleCallback`
+* then run `./gradlew assemble` in `Terminal`, you'll see:<br>
+```
+> Task :business-module:compileDebugJavaWithJavac
 Note: ApplicationLifecycleProcessor has been initialized
 Note: verifying class: me.bytebeats.business.BusinessAppLifecycleRequest
 Note: start generating proxy class for me.bytebeats.business.BusinessAppLifecycleRequest
-Note: AppLifecycle$$BusinessAppLifecycleRequest$$Proxy has been generated`
-this means apt has worked successfully.
+Note: AppLifecycle$$BusinessAppLifecycleRequest$$Proxy has been generated
+```
+<br>this means apt has worked successfully.
 
 ## How to use AGP locally?
-* Finish `Plugin<Project>` and `Transform` and `agp_name.properties`, in my case, it's `src/main/groovy/me/bytebeats/applifecycle/agp/ApplicationLifecyclePlugin`&`ApplicationLifecycleTransform` and `src/main/resources/META-INF/services/applifecycle-agp.properties` where `implementation-class` is declared.
-* in `agp/build.gradle`, declared `maven-publish` plugin and `mavenLocal()` and `pluginPublication` like this:
+<br>In apt module,
+* Finish `Plugin<Project>` and `Transform` and `agp_name.properties`, in my case, it's <br>`src/main/groovy/me/bytebeats/applifecycle/agp/ApplicationLifecyclePlugin`&`ApplicationLifecycleTransform` and <br>`src/main/resources/META-INF/services/applifecycle-agp.properties` where `implementation-class` is declared.
+* in `agp/build.gradle`, declared `maven-publish` plugin and `mavenLocal()` and `pluginPublication` like this:<br>
 ```
 plugins {
     id('groovy')
@@ -59,6 +65,31 @@ project.publishing {
 }
 ```
 * then run `./gradlew publishToMavenLocal`, then `AGP` will be published to local maven.
+* then run `./gradlew assemble` in `Terminal`, you'll see:<br>
+```
+> Task :app:transformClassesWithAppLifecycleAgpTransformForDebug
+<<<<<------AppLifecycleAgpTransform started------>>>>>
+Scanning inputs
+target jar input : me.bytebeats.applifecycle.business.AppLifecycle$$BusinessAppLifecycleRequest$$Proxy.class
+target directory input: .../ApplicationLifecycle/app/build/intermediates/javac/debug/classes
+target file input: me/bytebeats/applifecycle/app/AppLifecycle$$AppLifecycleRequest$$Proxy.class
+target directory input: .../ApplicationLifecycle/app/build/tmp/kotlin-classes/debug
+ASM started
+find manager class: me/bytebeats/applifecycle/api/ApplicationLifecycleManager.class
+visitMethod: <init>
+visitMethod: init
+-------onMethodEnter------
+proxy class inserted: me.bytebeats.applifecycle.business.AppLifecycle$$BusinessAppLifecycleRequest$$Proxy.class
+proxy class inserted: me.bytebeats.applifecycle.app.AppLifecycle$$AppLifecycleRequest$$Proxy.class
+-------onMethodExit------
+visitMethod: addApplicationLifecycleCallback
+...
+visitMethod: <clinit>
+inject finished
+ASM finished
+<<<<<------AppLifecycleAgpTransform finished------>>>>>
+```
+<br>this means apt has worked successfully.
 
 ## Stargazers over time
 
