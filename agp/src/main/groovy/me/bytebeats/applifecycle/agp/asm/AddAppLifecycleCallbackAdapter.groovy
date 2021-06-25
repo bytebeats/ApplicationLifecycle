@@ -9,10 +9,14 @@ import me.bytebeats.applifecycle.agp.util.Configs
  * E-mail: happychinapc@gmail.com
  * Quote: Peasant. Educated. Worker
  */
-class CallbackMethodAdapter extends AdviceAdapter {
+
+/**
+ * For every proxyClassFile, call {@link #addApplicationLifecycleCallback(String)} in {@link #init()} method
+ */
+class AddAppLifecycleCallbackAdapter extends AdviceAdapter {
     private List<String> proxyClassFiles
 
-    CallbackMethodAdapter(MethodVisitor mv, int access, String name, String desc, List<String> files) {
+    AddAppLifecycleCallbackAdapter(MethodVisitor mv, int access, String name, String desc, List<String> files) {
         super(ASM6, mv, access, name, desc)
         this.proxyClassFiles = files
     }
@@ -23,9 +27,10 @@ class CallbackMethodAdapter extends AdviceAdapter {
         println "-------onMethodEnter------"
         if (proxyClassFiles != null && !proxyClassFiles.isEmpty()) {
             proxyClassFiles.forEach(proxyClassFile -> {
-                println("proxy class: ${proxyClassFile}")
-                mv.visitLdcInsn(proxyClassFile.substring(0, proxyClassFile.length() - 6))//remove `.class`
+                //remove `.class`
+                mv.visitLdcInsn(proxyClassFile.substring(0, proxyClassFile.length() - 6))
                 mv.visitMethodInsn(INVOKESTATIC, Configs.APP_LIFE_CYCLE_MANAGER_CLASS_NAME, Configs.INJECT_ENTRY_METHOD_NAME, Configs.INJECT_ENTRY_METHOD_PARAM, false)
+                println("proxy class inserted: ${proxyClassFile}")
             })
         }
     }

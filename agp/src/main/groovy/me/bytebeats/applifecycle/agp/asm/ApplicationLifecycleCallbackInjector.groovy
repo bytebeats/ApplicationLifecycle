@@ -17,6 +17,11 @@ import java.util.zip.ZipEntry
  * E-mail: happychinapc@gmail.com
  * Quote: Peasant. Educated. Worker
  */
+
+/**
+ * Inject every proxy class file.
+ * Invoke {@link #addApplicationLifecycleCallback(String)} in {@link ApplicationLifecycleCallbackManager#init()} for every file.
+ */
 class ApplicationLifecycleCallbackInjector {
     private static volatile ApplicationLifecycleCallbackInjector instance;
 
@@ -35,14 +40,15 @@ class ApplicationLifecycleCallbackInjector {
         return instance
     }
 
-    void inject(List<String> classFiles) {
+    void inject(List<String> proxyClassFiles) {
         println("ASM started")
         File callbackManagerFile = ClassScanner.getAppLifecycleCallbackManagerFile()
-        File optJarFile = new File(callbackManagerFile.parent, "${callbackManagerFile.name}.opt")
-        if (optJarFile.exists()) optJarFile.delete()
+        //temp file for storing optimized application lifecycle callback manager file.
+        File optJar = new File(callbackManagerFile.parent, "${callbackManagerFile.name}.opt")
+        if (optJar.exists()) optJar.delete()
         JarFile file = new JarFile(callbackManagerFile)
         Enumeration<JarEntry> entryEnumeration = file.entries()
-        JarOutputStream jos = new JarOutputStream(new FileOutputStream(optJarFile))
+        JarOutputStream jos = new JarOutputStream(new FileOutputStream(optJar))
         while (entryEnumeration.hasMoreElements()) {
             JarEntry jarEntry = entryEnumeration.nextElement()
             String jarEntryName = jarEntry.name
@@ -50,15 +56,22 @@ class ApplicationLifecycleCallbackInjector {
             InputStream is = file.getInputStream(jarEntry)
             jos.putNextEntry(zipEntry)
 
+            //Find ApplicationLifecycleManager.class and execute inserting application lifecycle callback instances.
             if (jarEntryName == Configs.APP_LIFE_CYCLE_MANAGER_FILE_NAME) {
-                println("start adding ApplicationLifecycleCallback into $jarEntryName")
+                println("find manager class: $jarEntryName")
                 ClassReader reader = new ClassReader(is)
                 ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS)
-                ClassVisitor visitor = new CallbackManagerClassVisitor(writer, classFiles)
+                ClassVisitor visitor = new AppLifecycleCallbackManagerClassVisitor(writer, proxyClassFiles)
                 reader.accept(visitor, ClassReader.EXPAND_FRAMES)
+
+                /**
+                 * write inserted class into temp file.
+                 */
                 byte[] bytes = writer.toByteArray()
                 jos.write(bytes)
+                println("inject finished")
             } else {
+                //class not to be insert, keep same
                 jos.write(IOUtils.toByteArray(is))
             }
             is.close()
@@ -67,8 +80,7 @@ class ApplicationLifecycleCallbackInjector {
         jos.close()
         file.close()
         if (callbackManagerFile.exists()) callbackManagerFile.delete()
-        optJarFile.renameTo(callbackManagerFile)
-        println("ApplicationLifecycleManager located at ${callbackManagerFile.path}")
+        optJar.renameTo(callbackManagerFile)
         println("ASM finished")
     }
 }
