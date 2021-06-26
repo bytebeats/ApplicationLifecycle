@@ -2,6 +2,14 @@ plugins {
     id 'com.android.library'
 }
 
+ext {
+    API_ARTIFACT_ID = 'applifecycle-api'
+    API_VERSION = '1.0.0'
+    API_POM_DESCRIPTION = 'ApplicationLifecycle API'
+}
+
+apply from: 'mvnctl_publish_api.gradle'
+
 android {
     compileSdk 30
     buildToolsVersion "30.0.3"
@@ -31,7 +39,6 @@ android {
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
