@@ -1,7 +1,15 @@
 plugins {
     id('groovy')
-    id('maven-publish')
+//    id('maven-publish')
 }
+
+ext {
+    AGP_ARTIFACT_ID = 'applifecycle-agp'
+    AGP_VERSION = '1.0.0'
+    AGP_POM_DESCRIPTION = 'ApplicationLifecycle Android Gradle Plugin'
+}
+
+apply from: 'mvnctl_publish_agp.gradle'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_7
@@ -26,13 +34,13 @@ repositories {
  * publish agp to local repository through maven-publish plugin
  * run `./gradlew publishToMavenLocal` in Terminal to do the publishing
  */
-project.publishing {
-    publications {
-        pluginPublication(MavenPublication) {
-            from components.java
-            groupId 'me.bytebeats.agp'
-            artifactId 'applifecycle-agp'
-            version '1.0.0'
-        }
-    }
-}
+//project.publishing {
+//    publications {
+//        pluginPublication(MavenPublication) {
+//            from components.java
+//            groupId GROUP_ID
+//            artifactId AGP_ARTIFACT_ID
+//            version AGP_VERSION
+//        }
+//    }
+//}
