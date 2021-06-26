@@ -9,8 +9,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.0-alpha02'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10'
-        classpath('me.bytebeats.agp:applifecycle-agp:1.0.0')
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20'
+        classpath('io.github.bytebeats:applifecycle-agp:1.0.0')
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -29,4 +29,19 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    GROUP_ID = 'io.github.bytebeats'
+    DEVELOPER_ID = 'bytebeats'
+    DEVELOPER_NAME = 'Chen Pan'
+    DEVELOPER_EMAIL = 'happychinapc@gmail.com'
+    SCM_CONNECTION = 'scm:git:github.com/bytebeats/ApplicationLifecycle.git'
+    SCM_DEVELOPER_CONNECTION = 'scm:git:ssh:github.com/bytebeats/ApplicationLifecycle.git'
+    SCM_URL = 'https://github.com/bytebeats/ApplicationLifecycle/tree/master'
+    LICENSE_NAME = 'The Apache License, Version 2.0'
+    LICENSE_URL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    POM_URL = 'https://github.com/bytebeats/ApplicationLifecycle'
+    RELEASES_REPO_URL = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+    SNAPSHOTS_REPO_URL = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
 }
