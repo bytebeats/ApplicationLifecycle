@@ -12,10 +12,14 @@ task javadocJar(type: Jar) {
     classifier('javadoc')
 }
 
-
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     classifier('sources')
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 apply from: '../local_reader.gradle'
