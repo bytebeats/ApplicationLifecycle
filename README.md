@@ -3,6 +3,37 @@ Android 组件化开发时, 将 Application 的生命周期主动发送给监听
 <br>使用了 APT 技术, 生成 Application 生命周期监听者的代理类.
 <br>使用了 AGP 技术, 用于编译期将 APT 生成的代理类添加到管理类内部保存的回调列表中.
 
+# How to use APT&AGP from remote repository?
+## How to use APT from remote repository?
+<br>1, Add maven support. In your root build.gradle, add repository and dependency:
+```
+    repositories {
+        maven { url('https://repo1.maven.org/maven2/') }
+        ...
+        
+    dependencies {
+        ...
+        classpath('io.github.bytebeats:applifecycle-agp:$VERSION')
+        ...
+```
+<br>In your app build.gradle, use plugin and dependency:
+```
+    plugins {
+        id 'applifecycle-agp'
+        ...
+    }
+...
+    implementation 'io.github.bytebeats:applifecycle-api:$VERSION'
+    implementation 'io.github.bytebeats:applifecycle-annotation:$VERSION'
+    annotationProcessor 'io.github.bytebeats:applifecycle-apt:$VERSION'
+```
+<br>In you business module build.gradle, add annotation:
+```
+    implementation 'io.github.bytebeats:applifecycle-api:$VERSION'
+    implementation 'io.github.bytebeats:applifecycle-annotation:$VERSION'
+    annotationProcessor 'io.github.bytebeats:applifecycle-apt:$VERSION'
+```
+
 # How to use APT&AGP locally?
 ## How to use APT locally?
 <br>In apt module,
@@ -59,7 +90,7 @@ project.publishing {
             from components.java
             groupId 'me.bytebeats.agp'
             artifactId 'applifecycle-agp'
-            version '1.0.0'
+            $VERSION '$VERSION'
         }
     }
 }
