@@ -54,9 +54,14 @@ dependencies {
 
     implementation project(path: ':base')
     implementation project(path: ':business-module')
-    implementation project(path: ':annotation')
-    implementation project(path: ':api')
-    annotationProcessor project(path: ':apt')
+
+//    implementation project(path: ':annotation')
+//    implementation project(path: ':api')
+//    annotationProcessor project(path: ':apt')
+
+    implementation 'io.github.bytebeats:applifecycle-api:1.0.0'
+    implementation 'io.github.bytebeats:applifecycle-annotation:1.0.0'
+    annotationProcessor 'io.github.bytebeats:applifecycle-apt:1.0.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
