@@ -3,13 +3,12 @@ buildscript {
     repositories {
         maven { url('https://repo1.maven.org/maven2/') }
         google()
-        jcenter()
         mavenCentral()
 //        maven { url('https://jitpack.io') }
 //        mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31'
         classpath('io.github.bytebeats:applifecycle-agp:1.0.0')
 
@@ -22,7 +21,6 @@ allprojects {
     repositories {
         maven { url('https://repo1.maven.org/maven2/') }
         google()
-        jcenter()
         mavenCentral()
 //        maven { url('https://jitpack.io') }
 //        mavenLocal()

@@ -38,7 +38,7 @@ class ApplicationLifecycleTransform extends Transform {
         types.add(QualifiedContent.Scope.PROJECT)
         types.add(QualifiedContent.Scope.SUB_PROJECTS)
         types.add(QualifiedContent.Scope.EXTERNAL_LIBRARIES)
-        return types;
+        return types
     }
 
     @Override

@@ -8,7 +8,7 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.ltgt.gradle.incap/incap-processor/0.2/408ba7e6d0e70fc9f2765809560ea7d4c9ad35cf/incap-processor-0.2.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.ltgt.gradle.incap/incap/0.2/c73e3db9bee414d6ee27995d951fcdbee09acad/incap-0.2.jar" />
         </processorPath>
-        <module name="ApplicationLifecycle.apt" />
+        <module name="ApplicationLifecycle.apt.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">
